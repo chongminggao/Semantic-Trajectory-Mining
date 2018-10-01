@@ -1,0 +1,59 @@
+function DMKD_Get_STQuery_Resut(param_multi, result_multi)
+
+    Layer = length(param_multi);
+    for i = 1:Layer
+        param = param_multi{i};
+        result = result_multi{i};
+    end
+    showTheMap(param);
+    
+    
+    
+end
+
+
+
+
+function showTheMap(param)
+    figure;
+    if isfield(param,'img') 
+        img = imread(param.img);
+        hi = imshow(img);
+        set(hi,'AlphaData',0.7);
+        Xlim = xlim;
+        Ylim = ylim;
+        Xlim = [0,Xlim(2)+0.5];
+        Ylim = [0,Ylim(2)+0.5];
+        isRescale = true;
+        axis([Xlim,Ylim]);
+
+        if ~isfield(param,'axisRange')
+            error('Please specify the axisRange');
+        end
+    end
+end
+
+
+function latLongOne = Pixel2latLong(P, param, aa)
+    x_left = 0.5;
+    y_up = 0.5;
+    x_right = aa.Xlim(2) - 0.5;
+    y_down = aa.Ylim(2) - 0.5;
+    
+    height = y_down - y_up;
+    len = x_right - r_left;
+    
+    RelativeP = (P - [x_left,y_up])./[len,height];
+    
+    latLong_left = param.axisRange(1);
+    latLong_right = param.axisRange(2);
+    latLong_down = param.axisRange(3);
+    latLong_up = param.axisRange(4);
+   
+    latLong_height = latLong_up - latLong_down;
+    latLong_len = latLong_right - latLong_left;
+    
+    minn = param.axisRange([1,3]);
+    latLongOne = minn + RelativeP .* [latLong_len,latLong_height];
+
+end
